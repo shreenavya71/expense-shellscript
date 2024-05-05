@@ -46,18 +46,38 @@ else
     echo -e "Expense user already created..... $Y SKIPPING $N"
 fi
 
-mkdir -p /app
+mkdir -p /app &>>$LOGFILE 
 VALIDATE $? "creating app directory"
 
-curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
+curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOGFILE 
 VALIDATE $? "downloading backend code"
 
 cd /app
 
-unzip /tmp/backend.zip
+unzip /tmp/backend.zip &>>$LOGFILE 
 VALIDATE $? "extracted backend code"
 
-npm install
+npm install &>>$LOGFILE 
 VALIDATE $? "Installing nodeJS dependencies"
 
-cp /home/ec2-user/expense-shellscript/backend.service /etc/systemd/system/backend.service
+cp /home/ec2-user/expense-shellscript/backend.service /etc/systemd/system/backend.service &>>$LOGFILE 
+VALIDATE $? "copied backend service"
+
+
+systemctl daemon-reload &>>$LOGFILE 
+VALIDATE $? "Daemon Reload"
+
+systemctl start backend &>>$LOGFILE 
+VALIDATE $? "starting backend"
+
+systemctl enable backend &>>$LOGFILE 
+VALIDATE $? "Enabling Backend"
+
+dnf install mysql -y &>>$LOGFILE 
+VALIDATE $? "installing MYSQL client"
+
+mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$LOGFILE 
+VALIDATE $? "schema loading"
+
+systemctl restart backend &>>$LOGFILE 
+VALIDATE $? "Restarting backend"
