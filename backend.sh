@@ -37,11 +37,27 @@ VALIDATE $? "Enabling nodejs:20 version"
 dnf install nodejs -y &>>$LOGFILE
 VALIDATE $? "Installing nodeJs"
 
-id expense  &>>$LOGFILE
+id expense  &>>$LOGFILE                     
 if [ $? -ne 0 ]
 then
-    useradd expense &>>$LOGFILE
+    useradd expense &>>$LOGFILE                            # useradd expense command is not idempotency so we are changing the code
     VALIDATE $? "creating expense user"
 else   
     echo -e "Expense user already created..... $Y SKIPPING $N"
 fi
+
+mkdir -p /app
+VALIDATE $? "creating app directory"
+
+curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
+VALIDATE $? "downloading backend code"
+
+cd /app
+
+unzip /tmp/backend.zip
+VALIDATE $? "extracted backend code"
+
+npm install
+VALIDATE $? "Installing nodeJS dependencies"
+
+cp /home/ec2-user/expense-shellscript/backend.service /etc/systemd/system/backend.service
