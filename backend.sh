@@ -76,7 +76,7 @@ VALIDATE $? "Enabling Backend"
 dnf install mysql -y &>>$LOGFILE 
 VALIDATE $? "installing MYSQL client"
 
-mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$LOGFILE 
+mysql -h mysql.devopsnavyahome.online -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$LOGFILE   # mysql.devopsnavyahome.online---mysql BD server ip ----configure in R53, A--record
 VALIDATE $? "schema loading"
 
 systemctl restart backend &>>$LOGFILE 
