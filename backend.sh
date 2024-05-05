@@ -57,6 +57,8 @@ VALIDATE $? "downloading backend code"
 
 cd /app
 
+rm -rf /app/*                 #everytime if you unzip a folder which is already unziped, it will throw a error. so before unziping remove all the file in that directory and then unzip it 
+
 unzip /tmp/backend.zip &>>$LOGFILE 
 VALIDATE $? "extracted backend code"
 
