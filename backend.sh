@@ -9,6 +9,9 @@ G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 
+echo "please enter DB password:"
+read -s mysql_root_password
+
 
 VALIDATE(){
     if [ $1 -ne 0 ]
@@ -76,7 +79,7 @@ VALIDATE $? "Enabling Backend"
 dnf install mysql -y &>>$LOGFILE 
 VALIDATE $? "installing MYSQL client"
 
-mysql -h mysql.devopsnavyahome.online -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$LOGFILE   # mysql.devopsnavyahome.online---mysql BD server ip ----configure in R53, A--record
+mysql -h mysql.devopsnavyahome.online -uroot -p${mysql_root_password} < /app/schema/backend.sql &>>$LOGFILE   # mysql.devopsnavyahome.online---mysql BD server ip ----configure in R53, A--record
 VALIDATE $? "schema loading"
 
 systemctl restart backend &>>$LOGFILE 
