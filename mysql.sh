@@ -44,7 +44,7 @@ VALIDATE $? "Starting MYSQL server"
 # VALIDATE $? "setting up root password"
 
 # below command will be useful for idempotent  nature
-mysql -h devopsnavyahome.online -uroot -p${mysql_root_password} -e 'show databases;' &>>$LOGFILE
+mysql -h mysql.devopsnavyahome.online -uroot -p${mysql_root_password} -e 'show databases;' &>>$LOGFILE
 if [ $? -ne 0 ]
 then 
     mysql_secure_installation --set-root-pass ${mysql_root_password} &>>$LOGFILE
